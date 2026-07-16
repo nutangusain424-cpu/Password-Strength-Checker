@@ -1,55 +1,61 @@
+import re
+
 def check_password_strength(password):
     score = 0
 
-    has_upper = False
-    has_lower = False
-    has_digit = False
-    has_special = False
-
+    # Check length
     if len(password) >= 8:
         score += 1
 
-    for ch in password:
-        if ch.isupper():
-            has_upper = True
-        elif ch.islower():
-            has_lower = True
-        elif ch.isdigit():
-            has_digit = True
-        else:
-            has_special = True
-
-    if has_upper:
+    # Check uppercase letters
+    if re.search(r"[A-Z]", password):
         score += 1
 
-    if has_lower:
+    # Check numbers
+    if re.search(r"\d", password):
         score += 1
 
-    if has_digit:
+    # Check special characters
+    if re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
         score += 1
 
-    if has_special:
-        score += 1
-
+    # Display missing requirements
     print("\nPassword Analysis")
-    print("----------------------------")
+    print("-" * 30)
 
-    print("Length >=8 :", "Yes" if len(password) >= 8 else "No")
-    print("Uppercase  :", "Yes" if has_upper else "No")
-    print("Lowercase  :", "Yes" if has_lower else "No")
-    print("Digit      :", "Yes" if has_digit else "No")
-    print("Special    :", "Yes" if has_special else "No")
+    if len(password) < 8:
+        print("❌ Password should be at least 8 characters long.")
 
-    print("\nScore:", score, "/5")
+    if not re.search(r"[A-Z]", password):
+        print("❌ Add at least one uppercase letter.")
 
-    if score <= 2:
-        print("Strength : Weak")
-    elif score <= 4:
-        print("Strength : Medium")
+    if not re.search(r"\d", password):
+        print("❌ Add at least one number.")
+
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        print("❌ Add at least one special character.")
+
+    print("-" * 30)
+
+    # Determine strength
+    if score <= 1:
+        strength = "Weak 🔴"
+    elif score <= 3:
+        strength = "Medium 🟡"
     else:
-        print("Strength : Strong")
+        strength = "Strong 🟢"
+
+    print(f"Password Strength: {strength}")
 
 
-password = input("Enter your password: ")
+def main():
+    print("=" * 45)
+    print("      PASSWORD STRENGTH CHECKER")
+    print("=" * 45)
 
-check_password_strength(password)
+    password = input("Enter your password: ")
+    check_password_strength(password)
+
+
+if __name__ == "__main__":
+    main()
